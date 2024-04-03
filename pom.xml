@@ -13,7 +13,10 @@
     </properties>
 
     <modules>
-        <module>hls-demo</module>
+        <module>rise-webapi-center</module>
+        <module>rise-text-conversion-service</module>
+        <module>rise-video-conversion-service</module>
+        <module>rise-voice-conversion-service</module>
     </modules>
 
 
