@@ -12,3 +12,5 @@ rise:
     voice:
       azure:
         enabled: true
+        speech-key:
+        speech-region:

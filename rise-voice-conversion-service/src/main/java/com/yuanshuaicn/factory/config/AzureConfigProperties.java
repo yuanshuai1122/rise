@@ -15,4 +15,14 @@ public class AzureConfigProperties {
      */
     private Boolean enabled;
 
+    /**
+     * api key
+     */
+    private String speechKey;
+
+    /**
+     * 区域
+     */
+    private String speechRegion;
+
 }

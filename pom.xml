@@ -18,6 +18,7 @@
         <module>rise-video-conversion-service</module>
         <module>rise-voice-conversion-service</module>
         <module>rise-core</module>
+        <module>rise-storage-center</module>
     </modules>
 
 
