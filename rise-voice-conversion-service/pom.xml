@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yuanshuaicn</groupId>
-    <artifactId>voice-conversion</artifactId>
+    <artifactId>rise-voice-conversion-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rise-voice-conversion-service</name>
     <description>rise-voice-conversion-service</description>

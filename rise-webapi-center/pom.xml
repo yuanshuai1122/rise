@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yuanshuaicn</groupId>
-    <artifactId>webapi</artifactId>
+    <artifactId>rise-webapi-center</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rise-webapi-center</name>
     <description>rise-webapi-center</description>

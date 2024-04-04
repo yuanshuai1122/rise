@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yuanshuaicn</groupId>
-    <artifactId>text-conversion</artifactId>
+    <artifactId>rise-text-conversion-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rise-text-conversion-service</name>
     <description>rise-text-conversion-service</description>

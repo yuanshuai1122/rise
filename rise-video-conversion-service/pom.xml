@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yuanshuaicn</groupId>
-    <artifactId>video-conversion</artifactId>
+    <artifactId>rise-video-conversion-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rise-video-conversion-service</name>
     <description>rise-video-conversion-service</description>
