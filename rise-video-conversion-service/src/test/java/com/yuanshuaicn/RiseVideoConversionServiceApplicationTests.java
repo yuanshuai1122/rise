@@ -1,4 +1,4 @@
-package com.yuanshuaicn.videoconversion;
+package com.yuanshuaicn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

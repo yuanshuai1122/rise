@@ -1,10 +1,10 @@
-package com.yuanshuaicn.webapi;
+package com.yuanshuaicn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RiseWebapiCenterApplicationTests {
+class RiseTextConversionServiceApplicationTests {
 
     @Test
     void contextLoads() {

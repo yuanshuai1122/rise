@@ -1,10 +1,10 @@
-package com.yuanshuaicn.textconversion;
+package com.yuanshuaicn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RiseTextConversionServiceApplicationTests {
+class RiseVoiceConversionServiceApplicationTests {
 
     @Test
     void contextLoads() {

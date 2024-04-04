@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.yuanshuaicn</groupId>
 	<artifactId>rise-core</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>rise-core</name>
 	<description>rise-core</description>
 	<properties>

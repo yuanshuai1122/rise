@@ -1,13 +1,13 @@
-package com.yuanshuaicn.textconversion;
+package com.yuanshuaicn;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RiseTextConversionServiceApplication {
+public class RiseVideoConversionServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RiseTextConversionServiceApplication.class, args);
+        SpringApplication.run(RiseVideoConversionServiceApplication.class, args);
     }
 
 }
