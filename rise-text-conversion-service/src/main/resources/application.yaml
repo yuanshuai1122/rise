@@ -4,3 +4,16 @@ server:
 spring:
   application:
     name: rise-text-conversion-service
+
+
+rise:
+  conversation:
+    text:
+      zhipu:
+        enabled: true
+        api-key:
+        glm4:
+          enabled: true
+          request-url: https://open.bigmodel.cn/api/paas/v4/chat/completions
+          model: glm-4
+
