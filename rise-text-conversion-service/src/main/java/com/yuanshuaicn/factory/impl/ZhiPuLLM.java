@@ -20,7 +20,6 @@ import java.util.Map;
 @Slf4j
 @Component(LLMConstants.ZHI_PU)
 @ConditionalOnProperty(value = "rise.conversation.text.zhipu.enabled", havingValue = "true")
-@ConditionalOnMissingBean(name = LLMConstants.ZHI_PU)
 @RequiredArgsConstructor
 public class ZhiPuLLM implements LLM {
 

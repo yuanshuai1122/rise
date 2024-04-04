@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @EnableConfigurationProperties({ZhiPuConfigProperties.class})
-
 @SpringBootApplication
 public class RiseTextConversionServiceApplication {
 
