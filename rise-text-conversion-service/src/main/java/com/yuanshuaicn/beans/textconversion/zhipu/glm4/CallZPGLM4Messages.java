@@ -1,4 +1,4 @@
-package com.yuanshuaicn.beans.zhipu.glm4;
+package com.yuanshuaicn.beans.textconversion.zhipu.glm4;
 
 
 import lombok.Data;

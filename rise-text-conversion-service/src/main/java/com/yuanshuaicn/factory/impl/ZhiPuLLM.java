@@ -1,16 +1,15 @@
 package com.yuanshuaicn.factory.impl;
 
-import com.yuanshuaicn.beans.CallBean;
+import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
-import com.yuanshuaicn.beans.zhipu.CallZhiPuBean;
+import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
 import com.yuanshuaicn.config.ZhiPuConfigProperties;
-import com.yuanshuaicn.constants.LLMConstants;
+import com.yuanshuaicn.constants.textconversion.LLMConstants;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.factory.LLM;
 import com.yuanshuaicn.factory.impl.zhipu.ZhiPuGLM;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

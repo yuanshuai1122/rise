@@ -1,10 +1,10 @@
-package com.yuanshuaicn.beans;
+package com.yuanshuaicn.beans.textconversion.zhipu;
 
 
 import lombok.Data;
 
 @Data
-public class CallBean {
+public class CallZhiPuBean {
 
     /**
      * 文本内容
@@ -16,9 +16,11 @@ public class CallBean {
      */
     private String requestId;
 
+
     /**
-     * 模型版本
+     * api密钥
      */
-    private String modelVersion;
+    private String apiKey;
+
 
 }

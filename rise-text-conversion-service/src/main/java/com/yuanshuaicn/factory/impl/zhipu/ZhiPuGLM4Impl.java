@@ -2,19 +2,18 @@ package com.yuanshuaicn.factory.impl.zhipu;
 
 import com.google.gson.Gson;
 import com.yuanshuaicn.beans.common.ResultBean;
-import com.yuanshuaicn.beans.zhipu.CallZhiPuBean;
-import com.yuanshuaicn.beans.zhipu.glm4.CallZPGLM4Bean;
-import com.yuanshuaicn.beans.zhipu.glm4.CallZPGLM4Messages;
+import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
+import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Bean;
+import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Messages;
 import com.yuanshuaicn.config.zhipu.ZhiPuGLM4ConfigProperties;
 import com.yuanshuaicn.constants.HeaderConstants;
-import com.yuanshuaicn.constants.ZhiPuLLMConstants;
+import com.yuanshuaicn.constants.textconversion.ZhiPuLLMConstants;
 import com.yuanshuaicn.constants.enums.LlmRoleEnums;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.utils.OkHttpUtils;
 import com.yuanshuaicn.utils.ZhiPuApiTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

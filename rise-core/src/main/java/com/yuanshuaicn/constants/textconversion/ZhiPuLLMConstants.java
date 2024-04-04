@@ -1,4 +1,4 @@
-package com.yuanshuaicn.constants;
+package com.yuanshuaicn.constants.textconversion;
 
 public class ZhiPuLLMConstants {
 

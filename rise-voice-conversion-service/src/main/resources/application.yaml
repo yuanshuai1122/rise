@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+
+spring:
+  application:
+    name: rise-voice-conversion-service
+
+
+rise:
+  conversation:
+    voice:
+      azure:
+        enabled: true

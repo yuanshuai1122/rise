@@ -1,6 +1,6 @@
 package com.yuanshuaicn.service;
 
-import com.yuanshuaicn.beans.CallBean;
+import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;

@@ -1,7 +1,7 @@
 package com.yuanshuaicn.factory.impl.zhipu;
 
 import com.yuanshuaicn.beans.common.ResultBean;
-import com.yuanshuaicn.beans.zhipu.CallZhiPuBean;
+import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
 
 /**
  * 智谱接口
