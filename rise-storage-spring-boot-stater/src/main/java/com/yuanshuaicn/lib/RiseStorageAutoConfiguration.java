@@ -1,9 +1,9 @@
-package com.yuanshuaicn;
+package com.yuanshuaicn.lib;
 
-import com.yuanshuaicn.config.AliConfigProperties;
-import com.yuanshuaicn.constants.StorageChannel;
-import com.yuanshuaicn.services.RiseStorage;
-import com.yuanshuaicn.services.impl.AliStorageImpl;
+import com.yuanshuaicn.lib.config.AliConfigProperties;
+import com.yuanshuaicn.lib.constants.StorageChannel;
+import com.yuanshuaicn.lib.services.RiseStorage;
+import com.yuanshuaicn.lib.services.impl.AliStorageImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

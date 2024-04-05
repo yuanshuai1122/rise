@@ -1,14 +1,16 @@
-package com.yuanshuaicn.services.impl;
+package com.yuanshuaicn.lib.services.impl;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
-import com.yuanshuaicn.beans.ResultBean;
-import com.yuanshuaicn.beans.UploadBean;
-import com.yuanshuaicn.config.AliConfigProperties;
-import com.yuanshuaicn.services.RiseStorage;
+import com.aliyun.oss.model.PutObjectResult;
+import com.yuanshuaicn.lib.beans.ResultBean;
+import com.yuanshuaicn.lib.beans.UploadBean;
+import com.yuanshuaicn.lib.config.AliConfigProperties;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.services.RiseStorage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -26,11 +28,8 @@ public class AliStorageImpl implements RiseStorage {
     }
 
 
-
-
-
     @Override
-    public ResultBean<Object> upload(UploadBean uploadBean) {
+    public ResultBean<Object> uploadBytes(UploadBean uploadBean) {
 
         /*
          * Constructs a client instance with your account for accessing OSS
@@ -42,17 +41,19 @@ public class AliStorageImpl implements RiseStorage {
              * Create an empty folder without request body, note that the key must be
              * suffixed with a slash
              */
-            final String keySuffixWithSlash = "MyObjectKey/";
-            client.putObject(aliConfigProperties.getBucketName(), keySuffixWithSlash, new ByteArrayInputStream(new byte[0]));
-            System.out.println("Creating an empty folder " + keySuffixWithSlash + "\n");
+            final String keySuffixWithSlash = "videos/";
+            PutObjectResult result = client.putObject(aliConfigProperties.getBucketName(), keySuffixWithSlash, new ByteArrayInputStream(uploadBean.getBytes()));
+            log.info("result:{}", result);
+            log.info("Creating an empty folder :{}", keySuffixWithSlash);
+
 
             /*
              * Verify whether the size of the empty folder is zero
              */
             OSSObject object = client.getObject(aliConfigProperties.getBucketName(), keySuffixWithSlash);
-            System.out.println("Size of the empty folder '" + object.getKey() + "' is " +
-                    object.getObjectMetadata().getContentLength());
+            log.info("Size of the empty folder {} is {}", object.getKey(), object.getObjectMetadata().getContentLength());
             object.getObjectContent().close();
+
 
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
@@ -75,6 +76,6 @@ public class AliStorageImpl implements RiseStorage {
             client.shutdown();
         }
 
-        return null;
+        return new ResultBean<>(RetCodeEnum.SUCCESS, "上传成功", null);
     }
 }

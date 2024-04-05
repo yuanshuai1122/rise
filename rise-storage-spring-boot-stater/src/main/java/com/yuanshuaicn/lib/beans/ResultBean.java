@@ -1,4 +1,4 @@
-package com.yuanshuaicn.beans;
+package com.yuanshuaicn.lib.beans;
 
 //
 // Source code recreated from a .class file by IntelliJ IDEA
@@ -7,7 +7,7 @@ package com.yuanshuaicn.beans;
 
 
 
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 
 import java.io.Serializable;
 

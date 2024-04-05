@@ -5,7 +5,7 @@ import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
 import com.yuanshuaicn.config.ZhiPuConfigProperties;
 import com.yuanshuaicn.constants.textconversion.LLMConstants;
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.factory.LLM;
 import com.yuanshuaicn.factory.impl.zhipu.ZhiPuGLM;
 import lombok.RequiredArgsConstructor;

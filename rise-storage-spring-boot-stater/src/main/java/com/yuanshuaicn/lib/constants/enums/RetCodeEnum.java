@@ -1,4 +1,4 @@
-package com.yuanshuaicn.constants.enums;
+package com.yuanshuaicn.lib.constants.enums;
 
 import java.io.Serializable;
 

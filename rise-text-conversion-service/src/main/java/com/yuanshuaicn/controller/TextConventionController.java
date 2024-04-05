@@ -3,7 +3,7 @@ package com.yuanshuaicn.controller;
 
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.service.TextConversionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

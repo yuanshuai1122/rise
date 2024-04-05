@@ -1,4 +1,4 @@
-package com.yuanshuaicn.constants;
+package com.yuanshuaicn.lib.constants;
 
 public class StorageChannel {
 

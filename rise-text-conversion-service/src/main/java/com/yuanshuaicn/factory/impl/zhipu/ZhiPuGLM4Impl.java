@@ -9,7 +9,7 @@ import com.yuanshuaicn.config.zhipu.ZhiPuGLM4ConfigProperties;
 import com.yuanshuaicn.constants.HeaderConstants;
 import com.yuanshuaicn.constants.textconversion.ZhiPuLLMConstants;
 import com.yuanshuaicn.constants.enums.LlmRoleEnums;
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.utils.OkHttpUtils;
 import com.yuanshuaicn.utils.ZhiPuApiTokenUtil;
 import lombok.RequiredArgsConstructor;

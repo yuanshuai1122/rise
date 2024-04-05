@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.yuanshuaicn.RiseStorageAutoConfiguration
+  com.yuanshuaicn.lib.RiseStorageAutoConfiguration

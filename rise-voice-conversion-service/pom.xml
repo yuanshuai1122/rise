@@ -38,6 +38,7 @@
             <artifactId>client-sdk</artifactId>
             <version>1.36.0</version>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>

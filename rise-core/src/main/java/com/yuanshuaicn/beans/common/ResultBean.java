@@ -6,7 +6,7 @@ package com.yuanshuaicn.beans.common;
 //
 
 
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 
 import java.io.Serializable;
 

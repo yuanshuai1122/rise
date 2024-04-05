@@ -4,7 +4,7 @@ package com.yuanshuaicn.service;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.Text4VoiceDto;
 import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.factory.VoiceFactory;
 import com.yuanshuaicn.factory.VoiceModel;
 import lombok.RequiredArgsConstructor;
