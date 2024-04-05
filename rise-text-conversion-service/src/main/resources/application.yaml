@@ -11,7 +11,7 @@ rise:
     text:
       zhipu:
         enabled: true
-        api-key:
+        api-key: ${ZHIPU_API_KEY}
         glm4:
           enabled: true
           request-url: https://open.bigmodel.cn/api/paas/v4/chat/completions
