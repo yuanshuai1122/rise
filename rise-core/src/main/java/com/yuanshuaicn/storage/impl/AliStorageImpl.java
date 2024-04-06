@@ -1,35 +1,35 @@
-package com.yuanshuaicn.lib.services.impl;
+package com.yuanshuaicn.storage.impl;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
-import com.yuanshuaicn.lib.beans.ResultBean;
-import com.yuanshuaicn.lib.beans.UploadBean;
-import com.yuanshuaicn.lib.config.AliConfigProperties;
-import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
-import com.yuanshuaicn.lib.services.RiseStorage;
+import com.yuanshuaicn.storage.RiseStorage;
+import com.yuanshuaicn.storage.beans.UploadBean;
+import com.yuanshuaicn.storage.config.AliConfigProperties;
+import com.yuanshuaicn.storage.constants.StorageChannel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 
 @Slf4j
+@Component(StorageChannel.ALI)
+@RequiredArgsConstructor
 public class AliStorageImpl implements RiseStorage {
 
 
-    AliConfigProperties aliConfigProperties;
-
-    public AliStorageImpl(AliConfigProperties aliConfigProperties) {
-        this.aliConfigProperties = aliConfigProperties;
-    }
+    private final AliConfigProperties aliConfigProperties;
 
 
     @Override
-    public ResultBean<Object> uploadBytes(UploadBean uploadBean) {
+    public void uploadBytes(UploadBean uploadBean) {
 
         /*
          * Constructs a client instance with your account for accessing OSS
@@ -37,23 +37,16 @@ public class AliStorageImpl implements RiseStorage {
         OSS client = new OSSClientBuilder().build(aliConfigProperties.getEndpoint(), aliConfigProperties.getAccessKeyId(), aliConfigProperties.getAccessKeySecret());
 
         try {
-            /*
-             * Create an empty folder without request body, note that the key must be
-             * suffixed with a slash
-             */
-            final String keySuffixWithSlash = "videos/";
-            PutObjectResult result = client.putObject(aliConfigProperties.getBucketName(), keySuffixWithSlash, new ByteArrayInputStream(uploadBean.getBytes()));
-            log.info("result:{}", result);
-            log.info("Creating an empty folder :{}", keySuffixWithSlash);
 
+            // 填写Byte数组。
+            String objectName = "videos/test.mp3";
+            // 创建PutObjectRequest对象。
+            PutObjectRequest putObjectRequest = new PutObjectRequest(aliConfigProperties.getBucketName(), objectName, new ByteArrayInputStream(uploadBean.getBytes()));
 
-            /*
-             * Verify whether the size of the empty folder is zero
-             */
-            OSSObject object = client.getObject(aliConfigProperties.getBucketName(), keySuffixWithSlash);
-            log.info("Size of the empty folder {} is {}", object.getKey(), object.getObjectMetadata().getContentLength());
-            object.getObjectContent().close();
+            // 创建PutObject请求。
+            PutObjectResult result = client.putObject(putObjectRequest);
 
+            System.out.println(result);
 
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
@@ -67,8 +60,6 @@ public class AliStorageImpl implements RiseStorage {
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
             System.out.println("Error Message: " + ce.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         } finally {
             /*
              * Do not forget to shut down the client finally to release all allocated resources.
@@ -76,6 +67,5 @@ public class AliStorageImpl implements RiseStorage {
             client.shutdown();
         }
 
-        return new ResultBean<>(RetCodeEnum.SUCCESS, "上传成功", null);
     }
 }

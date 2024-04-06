@@ -1,4 +1,4 @@
-package com.yuanshuaicn.lib.beans;
+package com.yuanshuaicn.storage.beans;
 
 
 import lombok.Data;

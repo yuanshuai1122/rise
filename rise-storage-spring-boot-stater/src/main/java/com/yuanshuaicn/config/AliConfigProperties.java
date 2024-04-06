@@ -1,4 +1,4 @@
-package com.yuanshuaicn.lib.config;
+package com.yuanshuaicn.config;
 
 
 import lombok.Data;

@@ -3,7 +3,7 @@ package com.yuanshuaicn.service;
 import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
-import com.yuanshuaicn.lib.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.factory.LLM;
 import com.yuanshuaicn.factory.LLMFactory;
 import com.yuanshuaicn.utils.CallUtils;
