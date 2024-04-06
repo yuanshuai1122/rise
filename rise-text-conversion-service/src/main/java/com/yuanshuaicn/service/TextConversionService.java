@@ -44,7 +44,7 @@ public class TextConversionService {
         CallBean callBean = new CallBean();
         callBean.setContent(callInfo.getContent());
         callBean.setModelVersion(callInfo.getModelVersion());
-        callBean.setRequestId(CallUtils.generateRequestId(callInfo.getClientId()));
+        callBean.setRequestId(CallUtils.generateSessionId(callInfo.getClientId(), callInfo.getSessionId()));
 
         return llm.call(callBean);
 

@@ -46,9 +46,9 @@ public class AzureVoiceModelImpl implements VoiceModel {
         try {
             SpeechSynthesisResult speechSynthesisResult = speechSynthesizer.SpeakTextAsync(text4voiceBean.getContent()).get();
 
-
             UploadBean uploadBean = new UploadBean();
             uploadBean.setBytes(speechSynthesisResult.getAudioData());
+            uploadBean.setFileName(text4voiceBean.getFileName());
             aliStorage.uploadBytes(uploadBean);
 
 

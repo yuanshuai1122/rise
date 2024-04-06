@@ -7,4 +7,6 @@ public class Text4voiceBean {
 
     private String content;
 
+    private String fileName;
+
 }

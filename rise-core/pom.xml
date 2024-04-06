@@ -62,6 +62,12 @@
 			<version>3.8.0</version>
 		</dependency>
 
+		<!-- 提供 Spring Boot 对 AMQP（高级消息队列协议）的支持，包括 RabbitMQ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
 	</dependencies>
 
 

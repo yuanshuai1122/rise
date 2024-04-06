@@ -7,4 +7,6 @@ import lombok.Data;
 public class UploadBean {
 
     private byte[] bytes;
+
+    private String fileName;
 }

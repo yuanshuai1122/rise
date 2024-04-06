@@ -1,19 +1,27 @@
 package com.yuanshuaicn.factory.impl.zhipu;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Bean;
 import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Messages;
+import com.yuanshuaicn.beans.textconversion.zhipu.glm4.result.GLM4Response;
+import com.yuanshuaicn.beans.textconversion.zhipu.glm4.result.Message;
 import com.yuanshuaicn.config.zhipu.ZhiPuGLM4ConfigProperties;
 import com.yuanshuaicn.constants.HeaderConstants;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.textconversion.ZhiPuLLMConstants;
 import com.yuanshuaicn.constants.enums.LlmRoleEnums;
+import com.yuanshuaicn.mq.constant.DirectConstant;
+import com.yuanshuaicn.mq.constant.QueueConstant;
 import com.yuanshuaicn.utils.OkHttpUtils;
 import com.yuanshuaicn.utils.ZhiPuApiTokenUtil;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +39,12 @@ public class ZhiPuGLM4Impl implements ZhiPuGLM {
 
     private final ZhiPuGLM4ConfigProperties zhiPuGLM4ConfigProperties;
 
+    private final RabbitTemplate rabbitTemplate;
+
     OkHttpUtils okHttpClient = OkHttpUtils.builder(20, 30, TimeUnit.SECONDS,
             15, 15, 15, TimeUnit.SECONDS);
 
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
     @Override
     public ResultBean<Object> callZP(CallZhiPuBean call) {
@@ -49,13 +59,19 @@ public class ZhiPuGLM4Impl implements ZhiPuGLM {
         zpGLM4Bean.setModel(zhiPuGLM4ConfigProperties.getModel());
         zpGLM4Bean.setMessages(messages);
 
-        String sync = okHttpClient
+        String resultStr = okHttpClient
                 .url(zhiPuGLM4ConfigProperties.getRequestUrl())
                 .addHeader(HeaderConstants.AUTHORIZATION, HeaderConstants.BEARER + ZhiPuApiTokenUtil.generateToken(call.getApiKey(), 60))
                 .post(gson.toJson(zpGLM4Bean))
                 .sync();
 
+        GLM4Response glm4Response = gson.fromJson(resultStr, GLM4Response.class);
+        log.info("glm4Response:{}", glm4Response);
 
-        return new ResultBean<>(RetCodeEnum.SUCCESS, "请求成功", sync);
+        String content = glm4Response.getChoices().getFirst().getMessage().getContent();
+
+        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.YELLOW, content);
+
+        return new ResultBean<>(RetCodeEnum.SUCCESS, "请求成功", content);
     }
 }

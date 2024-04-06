@@ -5,6 +5,31 @@ spring:
   application:
     name: rise-text-conversion-service
 
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST} # rabbitmq 的 ip 地址
+    port: 5672 # 端口
+    username: ${RABBIT_MQ_USERNAME} # 账号
+    password: ${RABBIT_MQ_PASSWORD} # 密码
+    virtualHost: my_vhost # 连接到RabbitMQ服务上的虚拟主机
+    # 生产者消息确认机制
+    publisher-confirm-type: correlated # 设置生产者消息确认模式为相关确认模式
+    publisher-returns: true # 开启消息退回机制
+    template:
+      mandatory: true # 标记生产者消息为强制性的，确保消息始终被处理
+    # 消息接收设置
+    listener:
+      simple:
+        prefetch: 1 # 消息预取限制，控制预取消息的上限，处理完才可以继续获取
+        # 消费者消息确认机制
+        acknowledge-mode: auto # 自动 ack，由 spring 检测 listener 代码是否出现异常，没有异常则返回 ack；抛出异常则返回 nack
+        # 配置 retry ,消费者失败重试
+        retry:
+          enabled: true # 开启消费者失败重试
+          initial-interval: 1000 # 初识的失败等待时长
+          multiplier: 1 # 下次失败的等待时长倍数，下次等待时长 = multiplier * initial-interval
+          max-attempts: 3 # 最大重试次数
+          stateless: true # true：无状态;false 有状态。如果业务中包含事务，这里改为 false
+
 
 rise:
   conversation:

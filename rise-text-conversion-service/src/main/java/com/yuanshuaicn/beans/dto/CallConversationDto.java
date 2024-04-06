@@ -17,6 +17,11 @@ public class CallConversationDto {
     private String clientId;
 
     /**
+     * 会话id
+     */
+    private String sessionId;
+
+    /**
      * 模型
      */
     private String model;
