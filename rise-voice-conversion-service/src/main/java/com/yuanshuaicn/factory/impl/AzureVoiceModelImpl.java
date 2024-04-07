@@ -51,7 +51,6 @@ public class AzureVoiceModelImpl implements VoiceModel {
             uploadBean.setFileName(text4voiceBean.getFileName());
             aliStorage.uploadBytes(uploadBean);
 
-
             if (speechSynthesisResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
                 System.out.println("Speech synthesized to speaker for text [" + text4voiceBean.getContent() + "]");
             }

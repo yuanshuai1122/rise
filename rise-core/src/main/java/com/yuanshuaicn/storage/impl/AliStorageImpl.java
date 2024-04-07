@@ -39,7 +39,7 @@ public class AliStorageImpl implements RiseStorage {
         OSS client = new OSSClientBuilder().build(aliConfigProperties.getEndpoint(),
                 aliConfigProperties.getAccessKeyId(), aliConfigProperties.getAccessKeySecret());
         // 填写Byte数组。
-        String objectName = "voices/" + uploadBean.getFileName() + ".mp3";
+        String objectName = "voices/" + uploadBean.getFileName() + ".wav";
         // 创建PutObjectRequest对象。
         PutObjectRequest putObjectRequest = new PutObjectRequest(aliConfigProperties.getBucketName(),
                 objectName, new ByteArrayInputStream(uploadBean.getBytes()));
