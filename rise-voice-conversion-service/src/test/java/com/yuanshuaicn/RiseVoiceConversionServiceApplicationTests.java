@@ -19,10 +19,12 @@ class RiseVoiceConversionServiceApplicationTests {
 
     @Test
     void testTTS() {
-        Text4voiceBean text4voiceBean = new Text4voiceBean();
-        text4voiceBean.setContent("你好兄弟,给个面子");
-        text4voiceBean.setFileName("aa");
-        azureVoiceModel.text4voice(text4voiceBean);
+//        Text4voiceBean text4voiceBean = new Text4voiceBean();
+//        text4voiceBean.setContent("你好兄弟,给个面子");
+//        text4voiceBean.setFileName("aa");
+//        azureVoiceModel.text4voice(text4voiceBean);
+        azureVoiceModel.voice4text(null);
     }
+
 
 }

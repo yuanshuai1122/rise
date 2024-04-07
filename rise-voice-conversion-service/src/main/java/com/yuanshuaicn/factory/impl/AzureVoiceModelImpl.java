@@ -102,6 +102,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
             config.setVoiceName(GermanVoice);
 
             try (TranslationRecognizer recognizer = new TranslationRecognizer(config)) {
+
                 // Subscribes to events.
                 recognizer.recognizing.addEventListener((s, e) -> {
                     System.out.println("RECOGNIZING in '" + fromLanguage + "': Text=" + e.getResult().getText());
@@ -154,6 +155,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
                 // Starts continuous recognition. Uses StopContinuousRecognitionAsync() to stop recognition.
                 System.out.println("Say something...");
+
                 recognizer.startContinuousRecognitionAsync().get();
 
                 System.out.println("Press any key to stop");
