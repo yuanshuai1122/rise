@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 
 
 @Slf4j
@@ -29,43 +31,49 @@ public class AliStorageImpl implements RiseStorage {
 
 
     @Override
-    public void uploadBytes(UploadBean uploadBean) {
+    public String uploadBytes(UploadBean uploadBean) {
 
         /*
          * Constructs a client instance with your account for accessing OSS
          */
-        OSS client = new OSSClientBuilder().build(aliConfigProperties.getEndpoint(), aliConfigProperties.getAccessKeyId(), aliConfigProperties.getAccessKeySecret());
+        OSS client = new OSSClientBuilder().build(aliConfigProperties.getEndpoint(),
+                aliConfigProperties.getAccessKeyId(), aliConfigProperties.getAccessKeySecret());
+        // 填写Byte数组。
+        String objectName = "voices/" + uploadBean.getFileName() + ".mp3";
+        // 创建PutObjectRequest对象。
+        PutObjectRequest putObjectRequest = new PutObjectRequest(aliConfigProperties.getBucketName(),
+                objectName, new ByteArrayInputStream(uploadBean.getBytes()));
 
         try {
-
-            // 填写Byte数组。
-            String objectName = "voices/" + uploadBean.getFileName() + ".mp3";
-            // 创建PutObjectRequest对象。
-            PutObjectRequest putObjectRequest = new PutObjectRequest(aliConfigProperties.getBucketName(), objectName, new ByteArrayInputStream(uploadBean.getBytes()));
-
             // 创建PutObject请求。
             PutObjectResult result = client.putObject(putObjectRequest);
+            log.info("ali oss result:{}", result);
+            // 返回url
+            Date date = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7);
+            URL url = client.generatePresignedUrl(aliConfigProperties.getBucketName(), objectName, date);
 
-            System.out.println(result);
-
+            return url.toString();
         } catch (OSSException oe) {
-            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+            log.error("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
-            System.out.println("Error Message: " + oe.getErrorMessage());
-            System.out.println("Error Code:       " + oe.getErrorCode());
-            System.out.println("Request ID:      " + oe.getRequestId());
-            System.out.println("Host ID:           " + oe.getHostId());
+            log.error("Error Message: " + oe.getErrorMessage());
+            log.error("Error Code:       " + oe.getErrorCode());
+            log.error("Request ID:      " + oe.getRequestId());
+            log.error("Host ID:           " + oe.getHostId());
         } catch (ClientException ce) {
-            System.out.println("Caught an ClientException, which means the client encountered "
+            log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
-            System.out.println("Error Message: " + ce.getMessage());
+            log.error("Error Message: " + ce.getMessage());
         } finally {
             /*
              * Do not forget to shut down the client finally to release all allocated resources.
              */
             client.shutdown();
         }
+
+
+        return null;
 
     }
 }

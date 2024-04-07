@@ -5,6 +5,12 @@ import com.yuanshuaicn.storage.beans.UploadBean;
 
 public interface RiseStorage {
 
-    void uploadBytes(UploadBean uploadBean);
+    /**
+     * byte文件上传
+     *
+     * @param uploadBean 上传bean
+     * @return {@link String}
+     */
+    String uploadBytes(UploadBean uploadBean);
 
 }
