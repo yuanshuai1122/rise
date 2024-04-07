@@ -9,4 +9,8 @@ public class UploadBean {
     private byte[] bytes;
 
     private String fileName;
+
+    private String filePath;
+
+    private String fileSuffix;
 }

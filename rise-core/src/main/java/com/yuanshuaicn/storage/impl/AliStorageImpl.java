@@ -39,7 +39,7 @@ public class AliStorageImpl implements RiseStorage {
         OSS client = new OSSClientBuilder().build(aliConfigProperties.getEndpoint(),
                 aliConfigProperties.getAccessKeyId(), aliConfigProperties.getAccessKeySecret());
         // 填写Byte数组。
-        String objectName = "voices/" + uploadBean.getFileName() + ".wav";
+        String objectName = uploadBean.getFilePath() + uploadBean.getFileName() + uploadBean.getFileSuffix();
         // 创建PutObjectRequest对象。
         PutObjectRequest putObjectRequest = new PutObjectRequest(aliConfigProperties.getBucketName(),
                 objectName, new ByteArrayInputStream(uploadBean.getBytes()));
@@ -60,6 +60,7 @@ public class AliStorageImpl implements RiseStorage {
             log.error("Error Code:       " + oe.getErrorCode());
             log.error("Request ID:      " + oe.getRequestId());
             log.error("Host ID:           " + oe.getHostId());
+
         } catch (ClientException ce) {
             log.error("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
@@ -71,7 +72,6 @@ public class AliStorageImpl implements RiseStorage {
              */
             client.shutdown();
         }
-
 
         return null;
 
