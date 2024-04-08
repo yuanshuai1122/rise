@@ -18,11 +18,32 @@ public class AzureConfigProperties {
     /**
      * api key
      */
-    private String speechKey;
+    private String apiKey;
 
     /**
      * 区域
      */
-    private String speechRegion;
+    private String locale;
 
+
+    /**
+     * 服务uri
+     */
+    private String serviceUri;
+
+    /**
+     * 音频类型
+     */
+    private String audioType;
+
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 发音者名称
+     */
+    private String voiceName;
 }

@@ -11,8 +11,10 @@ import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
 import com.yuanshuaicn.constants.voiceconversion.VoiceModelConstants;
 import com.yuanshuaicn.factory.VoiceModel;
 import com.yuanshuaicn.config.AzureConfigProperties;
-import com.yuanshuaicn.storage.beans.UploadBean;
 import com.yuanshuaicn.storage.impl.AliStorageImpl;
+import com.yuanshuaicn.utils.ByteArray;
+import com.yuanshuaicn.utils.HttpsConnection;
+import com.yuanshuaicn.utils.XmlDom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,6 +23,10 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.lang3.StringUtils;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.DataOutputStream;
+import java.io.InputStream;
 
 /**
  * azure语音模型impl
@@ -42,55 +48,15 @@ public class AzureVoiceModelImpl implements VoiceModel {
     @Override
     public ResultBean<Object> text4voice(Text4voiceBean text4voiceBean) {
 
-        SpeechConfig speechConfig = SpeechConfig.fromSubscription(azureConfigProperties.getSpeechKey(), azureConfigProperties.getSpeechRegion());
-
-        speechConfig.setSpeechSynthesisVoiceName("zh-CN-XiaoxiaoMultilingualNeural");
-
-        SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig);
-
-
-        try {
-
-            SpeechSynthesisResult speechSynthesisResult = speechSynthesizer.StartSpeakingTextAsync(text4voiceBean.getContent()).get();
-
-            UploadBean uploadBean = new UploadBean();
-            uploadBean.setBytes(speechSynthesisResult.getAudioData());
-            uploadBean.setFileName(text4voiceBean.getFileName());
-            uploadBean.setFilePath("voices/");
-            uploadBean.setFileSuffix(".mp3");
-            String url = aliStorage.uploadBytes(uploadBean);
-            log.info("上传结果, url:{}", url);
-
-            if (speechSynthesisResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
-                log.info("Speech synthesized to speaker for text [ {} ]", text4voiceBean.getContent());
-            }
-            else if (speechSynthesisResult.getReason() == ResultReason.Canceled) {
-                SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails.fromResult(speechSynthesisResult);
-                log.info("CANCELED: Reason= {}", cancellation.getReason());
-
-                if (cancellation.getReason() == CancellationReason.Error) {
-                    log.info("CANCELED: ErrorCode={}", cancellation.getErrorCode());
-                    log.info("CANCELED: ErrorDetails={}", cancellation.getErrorDetails());
-                    log.info("CANCELED: Did you set the speech resource key and region values?");
-                }
-            }
-
-
-        } catch (InterruptedException e){
-            log.error("文本转语音异常, e:{}", e);
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            log.error("文本转语音异常, e:{}", e);
-        }
-
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "转换成功", null);
+
     }
 
     @Override
     public ResultBean<Object> voice4text(Voice4Text voice4Text) {
 
-        try (SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(azureConfigProperties.getSpeechKey(), azureConfigProperties.getSpeechRegion())) {
+        try (SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(azureConfigProperties.getApiKey(), azureConfigProperties.getLocale())) {
 
             // Sets source and target language(s).
             String fromLanguage = "zh-CN";
@@ -174,4 +140,65 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
         return null;
     }
+
+
+
+
+    /**
+     * 合成音频 https://blog.csdn.net/qq_38935605/article/details/133136466
+     * @param textToSynthesize 传入需要翻译的文本
+     * @return
+     */
+    public byte[] genAudioBytes(String textToSynthesize, AzureConfigProperties azureConfigProperties) {
+        String accessToken = authentication.genAccessToken();
+        if (StringUtils.isEmpty(accessToken)) {
+            return new byte[0];
+        }
+        try {
+            HttpsURLConnection webRequest = HttpsConnection.getHttpsConnection(azureConfigProperties.getServiceUri());
+            webRequest.setRequestProperty("Host", "eastus.tts.speech.microsoft.com");
+            webRequest.setRequestProperty("Content-Type", "application/ssml+xml");
+            webRequest.setRequestProperty("X-Microsoft-OutputFormat", azureConfigProperties.getAudioType());
+            webRequest.setRequestProperty("Authorization", "Bearer " + accessToken);
+            webRequest.setRequestProperty("Ocp-Apim-Subscription-Key", azureConfigProperties.getApiKey());
+            webRequest.setRequestProperty("User-Agent", "Mozilla/5.0");
+            webRequest.setRequestProperty("Accept", "*/*");
+            webRequest.setDoInput(true);
+            webRequest.setDoOutput(true);
+            webRequest.setConnectTimeout(5000);
+            webRequest.setReadTimeout(300000);
+            webRequest.setRequestMethod("POST");
+
+            String body = XmlDom.createDom(azureConfigProperties.getLocale(), azureConfigProperties.getGender(), azureConfigProperties.getVoiceName(), textToSynthesize);
+            if (StringUtils.isEmpty(body)) {
+                return new byte[0];
+            }
+            byte[] bytes = body.getBytes();
+            webRequest.setRequestProperty("content-length", String.valueOf(bytes.length));
+            webRequest.connect();
+            DataOutputStream dop = new DataOutputStream(webRequest.getOutputStream());
+            dop.write(bytes);
+            dop.flush();
+            dop.close();
+            InputStream inSt = webRequest.getInputStream();
+            ByteArray ba = new ByteArray();
+            int rn2 = 0;
+            int bufferLength = 4096;
+            byte[] buf2 = new byte[bufferLength];
+            while ((rn2 = inSt.read(buf2, 0, bufferLength)) > 0) {
+                ba.cat(buf2, 0, rn2);
+            }
+
+            inSt.close();
+            webRequest.disconnect();
+            return ba.getArray();
+        } catch (Exception e) {
+            log.error("Synthesis tts speech failed {}", e.getMessage());
+        }
+
+        return null;
+    }
+
+
+
 }
