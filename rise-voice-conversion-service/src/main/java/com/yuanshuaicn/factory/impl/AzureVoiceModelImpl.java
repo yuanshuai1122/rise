@@ -11,6 +11,7 @@ import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
 import com.yuanshuaicn.constants.voiceconversion.VoiceModelConstants;
 import com.yuanshuaicn.factory.VoiceModel;
 import com.yuanshuaicn.config.AzureConfigProperties;
+import com.yuanshuaicn.service.Authentication;
 import com.yuanshuaicn.storage.impl.AliStorageImpl;
 import com.yuanshuaicn.utils.ByteArray;
 import com.yuanshuaicn.utils.HttpsConnection;
@@ -44,100 +45,19 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
     private final AliStorageImpl aliStorage;
 
+    private final Authentication authentication;
+
 
     @Override
     public ResultBean<Object> text4voice(Text4voiceBean text4voiceBean) {
-
-
+        byte[] bytes = genAudioBytes(text4voiceBean.getContent(), azureConfigProperties);
+        ByteArray.convertByteArrayToFile(bytes, "aa.mp3", "/Users/wangxinru/Downloads/");
         return new ResultBean<>(RetCodeEnum.SUCCESS, "转换成功", null);
 
     }
 
     @Override
     public ResultBean<Object> voice4text(Voice4Text voice4Text) {
-
-        try (SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(azureConfigProperties.getApiKey(), azureConfigProperties.getLocale())) {
-
-            // Sets source and target language(s).
-            String fromLanguage = "zh-CN";
-            config.setSpeechRecognitionLanguage(fromLanguage);
-            config.addTargetLanguage("zh");
-
-            // Sets voice name of synthesis output.
-            String GermanVoice = "zh-CN-AmalaNeural";
-            config.setVoiceName(GermanVoice);
-
-            try (TranslationRecognizer recognizer = new TranslationRecognizer(config)) {
-
-                // Subscribes to events.
-                recognizer.recognizing.addEventListener((s, e) -> {
-                    log.info("RECOGNIZING in {} : Text={}", fromLanguage, e.getResult().getText());
-
-                    Map<String, String> map = e.getResult().getTranslations();
-                    for(String element : map.keySet()) {
-                        log.info("    TRANSLATING into {}: {}", element, map.get(element));
-                    }
-                });
-
-                recognizer.recognized.addEventListener((s, e) -> {
-                    if (e.getResult().getReason() == ResultReason.TranslatedSpeech) {
-                        System.out.println("RECOGNIZED in '" + fromLanguage + "': Text=" + e.getResult().getText());
-
-                        Map<String, String> map = e.getResult().getTranslations();
-                        for(String element : map.keySet()) {
-                            System.out.println("    TRANSLATED into '" + element + "': " + map.get(element));
-                        }
-                    }
-                    if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                        System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
-                        System.out.println("    Speech not translated.");
-                    }
-                    else if (e.getResult().getReason() == ResultReason.NoMatch) {
-                        System.out.println("NOMATCH: Speech could not be recognized.");
-                    }
-                });
-
-                recognizer.synthesizing.addEventListener((s, e) -> {
-                    System.out.println("Synthesis result received. Size of audio data: " + e.getResult().getAudio().length);
-                });
-
-                recognizer.canceled.addEventListener((s, e) -> {
-                    System.out.println("CANCELED: Reason=" + e.getReason());
-
-                    if (e.getReason() == CancellationReason.Error) {
-                        System.out.println("CANCELED: ErrorCode=" + e.getErrorCode());
-                        System.out.println("CANCELED: ErrorDetails=" + e.getErrorDetails());
-                        System.out.println("CANCELED: Did you update the subscription info?");
-                    }
-                });
-
-                recognizer.sessionStarted.addEventListener((s, e) -> {
-                    System.out.println("\nSession started event.");
-                });
-
-                recognizer.sessionStopped.addEventListener((s, e) -> {
-                    System.out.println("\nSession stopped event.");
-                });
-
-                // Starts continuous recognition. Uses StopContinuousRecognitionAsync() to stop recognition.
-                System.out.println("Say something...");
-
-                recognizer.startContinuousRecognitionAsync().get();
-
-                System.out.println("Press any key to stop");
-                new Scanner(System.in).nextLine();
-
-                recognizer.stopContinuousRecognitionAsync().get();
-            } catch (ExecutionException e) {
-
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-
-                throw new RuntimeException(e);
-            }
-        }
-
-
         return null;
     }
 

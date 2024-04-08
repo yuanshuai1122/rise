@@ -21,10 +21,14 @@ public class AzureConfigProperties {
     private String apiKey;
 
     /**
+     * 请求token地址
+     */
+    private String accessTokenUri;
+
+    /**
      * 区域
      */
     private String locale;
-
 
     /**
      * 服务uri

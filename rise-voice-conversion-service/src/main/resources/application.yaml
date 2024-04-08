@@ -38,8 +38,13 @@ rise:
     voice:
       azure:
         enabled: true
-        speech-key: ${AZURE_SPEECH_KEY}
-        speech-region: ${AZURE_SPEECH_REGION}
+        api-key: ${AZURE_API_KEY}
+        access-token-uri: ${AZURE_ACCESS_TOKEN_URI}
+        locale: ${AZURE_LOCALE}
+        gender: ${AZURE_GENDER}
+        service-uri: ${AZURE_SERVICE_URI}
+        voice-name: ${AZURE_VOICE_NAME}
+        audio-type: ${AZURE_AUDIO_TYPE}
 
   storage:
     ali:
