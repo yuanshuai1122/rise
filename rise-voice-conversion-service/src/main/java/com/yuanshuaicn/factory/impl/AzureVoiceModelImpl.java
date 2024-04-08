@@ -93,23 +93,23 @@ public class AzureVoiceModelImpl implements VoiceModel {
         try (SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(azureConfigProperties.getSpeechKey(), azureConfigProperties.getSpeechRegion())) {
 
             // Sets source and target language(s).
-            String fromLanguage = "en-US";
+            String fromLanguage = "zh-CN";
             config.setSpeechRecognitionLanguage(fromLanguage);
-            config.addTargetLanguage("de");
+            config.addTargetLanguage("zh");
 
             // Sets voice name of synthesis output.
-            String GermanVoice = "de-DE-AmalaNeural";
+            String GermanVoice = "zh-CN-AmalaNeural";
             config.setVoiceName(GermanVoice);
 
             try (TranslationRecognizer recognizer = new TranslationRecognizer(config)) {
 
                 // Subscribes to events.
                 recognizer.recognizing.addEventListener((s, e) -> {
-                    System.out.println("RECOGNIZING in '" + fromLanguage + "': Text=" + e.getResult().getText());
+                    log.info("RECOGNIZING in {} : Text={}", fromLanguage, e.getResult().getText());
 
                     Map<String, String> map = e.getResult().getTranslations();
                     for(String element : map.keySet()) {
-                        System.out.println("    TRANSLATING into '" + element + "': " + map.get(element));
+                        log.info("    TRANSLATING into {}: {}", element, map.get(element));
                     }
                 });
 
