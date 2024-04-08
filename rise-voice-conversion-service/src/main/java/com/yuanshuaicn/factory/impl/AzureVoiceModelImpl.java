@@ -50,8 +50,11 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
     @Override
     public ResultBean<Object> text4voice(Text4voiceBean text4voiceBean) {
+        // 生成字节文件
         byte[] bytes = genAudioBytes(text4voiceBean.getContent(), azureConfigProperties);
-        ByteArray.convertByteArrayToFile(bytes, "aa.mp3", "/Users/wangxinru/Downloads/");
+        // 存储到桶
+        ByteArray.convertByteArrayToFile(bytes, "aa.wav", "/Users/wangxinru/Downloads/");
+
         return new ResultBean<>(RetCodeEnum.SUCCESS, "转换成功", null);
 
     }
