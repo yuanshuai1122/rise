@@ -10,4 +10,10 @@ import lombok.Data;
  **/
 @Data
 public class Voice4Text {
+
+
+    private String voiceUrl;
+
+    private String sessionId;
+
 }

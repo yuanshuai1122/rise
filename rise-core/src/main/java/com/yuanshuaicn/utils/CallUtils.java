@@ -26,4 +26,13 @@ public class CallUtils {
         return clientId + "-" + sessionId;
     }
 
+    /**
+     * 生成会话ID
+     *
+     * @return {@link String}
+     */
+    public static String generateSessionId() {
+        return UUID.randomUUID().toString();
+    }
+
 }

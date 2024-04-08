@@ -48,3 +48,7 @@ rise:
       access-key-secret: ${ALI_ACCESS_KEY_SECRET}
       endpoint: https://oss-cn-beijing.aliyuncs.com
       bucket-name: ${ALI_BUCKET_NAME}
+
+  context:
+    interceptor:
+      enabled: true

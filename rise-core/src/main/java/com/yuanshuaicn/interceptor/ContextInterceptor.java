@@ -1,48 +1,42 @@
 package com.yuanshuaicn.interceptor;
 
 import com.yuanshuaicn.beans.ModelInfo;
+import com.yuanshuaicn.config.ModelContext;
 import com.yuanshuaicn.constants.CommonConstants;
-import com.yuanshuaicn.constants.HeaderConstants;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.concurrent.TimeUnit;
-
-@Component
-public class ModelInterceptor implements HandlerInterceptor {
+/**
+ * @program: rise
+ * @description: 上下文拦截器
+ * @author: yuanshuai
+ * @create: 2024-04-08 12:12
+ **/
+@Slf4j
+@Component("contextInterceptor")
+@Order(1)
+@ConditionalOnProperty(value = "rise.context.interceptor.enabled", havingValue = "true")
+public class ContextInterceptor implements HandlerInterceptor {
 
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 获取模型
-        String textModel = request.getHeader(HeaderConstants.MODEL_TEXT);
-        String textSubModel = request.getHeader(HeaderConstants.MODEL_TEXT_SUB);
-        String voiceModel = request.getHeader(HeaderConstants.MODEL_VOICE);
-        String videoModel = request.getHeader(HeaderConstants.MODEL_VIDEO);
-        // 获取客户端会话id
-        String clientSessionId = request.getHeader(HeaderConstants.CLIENT_SESSION_ID);
-        if (StringUtils.isBlank(clientSessionId)) {
-            return false;
+        Object o = redisTemplate.opsForValue().get(CommonConstants.MODEL_REDIS_KEY);
+        if (null != o) {
+            ModelInfo modelInfo = (ModelInfo) o;
+            ModelContext.setModelInfo(modelInfo);
         }
-
-        ModelInfo modelInfo = new ModelInfo();
-        modelInfo.setTextModel(textModel);
-        modelInfo.setTextSubModel(textSubModel);
-        modelInfo.setVoiceModel(voiceModel);
-        modelInfo.setVideoModel(videoModel);
-
-        redisTemplate.opsForValue().set(CommonConstants.MODEL_REDIS_KEY, modelInfo, 300, TimeUnit.SECONDS);
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
@@ -54,6 +48,7 @@ public class ModelInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        ModelContext.clear();
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }
