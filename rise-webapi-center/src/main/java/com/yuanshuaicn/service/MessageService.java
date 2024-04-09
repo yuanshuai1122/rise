@@ -6,7 +6,7 @@ import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
 import com.yuanshuaicn.besans.dto.SendMessageDto;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
-import com.yuanshuaicn.mq.constant.DirectConstant;
+import com.yuanshuaicn.mq.constant.QueenConstant;
 import com.yuanshuaicn.utils.CallUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,8 @@ public class MessageService {
         voice4Text.setVoiceUrl("https://rise-bucket.oss-cn-beijing.aliyuncs.com/voices/whatstheweatherlike.wav");
         voice4Text.setSessionId(sessionId);
 
-        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.RED, new QueenInfo(voice4Text.getVoiceUrl(), voice4Text.getSessionId()));
+        // 发送到语音转文本
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_VOICE_4_TEXT, new QueenInfo(voice4Text.getVoiceUrl(), voice4Text.getSessionId()));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "成功", null);
     }

@@ -27,7 +27,6 @@ public class ModelInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("pppp");
         // 获取模型
         String textModel = request.getHeader(HeaderConstants.MODEL_TEXT);
         String textSubModel = request.getHeader(HeaderConstants.MODEL_TEXT_SUB);

@@ -14,7 +14,7 @@ import com.yuanshuaicn.constants.HeaderConstants;
 import com.yuanshuaicn.constants.enums.LlmRoleEnums;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.textconversion.ZhiPuLLMConstants;
-import com.yuanshuaicn.mq.constant.DirectConstant;
+import com.yuanshuaicn.mq.constant.QueenConstant;
 import com.yuanshuaicn.utils.OkHttpUtils;
 import com.yuanshuaicn.utils.ZhiPuApiTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +68,8 @@ public class ZhiPuGLM4Impl implements ZhiPuGLM {
 
         String content = glm4Response.getChoices().getFirst().getMessage().getContent();
 
-        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.YELLOW, new QueenInfo(content, call.getRequestId()));
+        // 发送到文本转语音队列
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT_4_VOICE, new QueenInfo(content, call.getRequestId()));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "请求成功", content);
     }

@@ -11,7 +11,7 @@ import com.yuanshuaicn.constants.HeaderConstants;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.voiceconversion.VoiceModelConstants;
 import com.yuanshuaicn.factory.VoiceModel;
-import com.yuanshuaicn.mq.constant.DirectConstant;
+import com.yuanshuaicn.mq.constant.QueenConstant;
 import com.yuanshuaicn.service.Authentication;
 import com.yuanshuaicn.storage.impl.AliStorageImpl;
 import com.yuanshuaicn.utils.*;
@@ -59,6 +59,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
         // 存储到桶
         ByteArray.convertByteArrayToFile(bytes, text4voiceBean.getFileName() + ".wav", "/Users/yuanshuai/Downloads/");
 
+        log.info("文本转语音完成, text4voiceBean:{}", text4voiceBean);
         return new ResultBean<>(RetCodeEnum.SUCCESS, "转换成功", null);
 
     }
@@ -79,71 +80,69 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
         SimpleVoice4TextResponse textResponse = JsonUtils.jsonToObj(resultStr, SimpleVoice4TextResponse.class);
 
-        // 放入队列
-        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.PINK, new QueenInfo(voice4Text.getSessionId(), textResponse.getDisplayText()));
+        // 放入文本队列
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT, new QueenInfo(voice4Text.getSessionId(), textResponse.getDisplayText()));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "成功", null);
 
     }
 
 
-
-/**
- * 合成音频 https://blog.csdn.net/qq_38935605/article/details/133136466
- *
- * @param textToSynthesize 传入需要翻译的文本
- * @return
- */
-public byte[] genAudioBytes(String textToSynthesize, AzureConfigProperties azureConfigProperties) {
-    String accessToken = authentication.genAccessToken();
-    if (StringUtils.isEmpty(accessToken)) {
-        return new byte[0];
-    }
-    try {
-        HttpsURLConnection webRequest = HttpsConnection.getHttpsConnection(azureConfigProperties.getServiceUri());
-        webRequest.setRequestProperty("Host", "eastus.tts.speech.microsoft.com");
-        webRequest.setRequestProperty("Content-Type", "application/ssml+xml");
-        webRequest.setRequestProperty("X-Microsoft-OutputFormat", azureConfigProperties.getAudioType());
-        webRequest.setRequestProperty("Authorization", "Bearer " + accessToken);
-        webRequest.setRequestProperty("Ocp-Apim-Subscription-Key", azureConfigProperties.getApiKey());
-        webRequest.setRequestProperty("User-Agent", "Mozilla/5.0");
-        webRequest.setRequestProperty("Accept", "*/*");
-        webRequest.setDoInput(true);
-        webRequest.setDoOutput(true);
-        webRequest.setConnectTimeout(5000);
-        webRequest.setReadTimeout(300000);
-        webRequest.setRequestMethod("POST");
-
-        String body = XmlDom.createDom(azureConfigProperties.getLocale(), azureConfigProperties.getGender(), azureConfigProperties.getVoiceName(), textToSynthesize);
-        if (StringUtils.isEmpty(body)) {
+    /**
+     * 合成音频 https://blog.csdn.net/qq_38935605/article/details/133136466
+     *
+     * @param textToSynthesize 传入需要翻译的文本
+     * @return
+     */
+    public byte[] genAudioBytes(String textToSynthesize, AzureConfigProperties azureConfigProperties) {
+        String accessToken = authentication.genAccessToken();
+        if (StringUtils.isEmpty(accessToken)) {
             return new byte[0];
         }
-        byte[] bytes = body.getBytes();
-        webRequest.setRequestProperty("content-length", String.valueOf(bytes.length));
-        webRequest.connect();
-        DataOutputStream dop = new DataOutputStream(webRequest.getOutputStream());
-        dop.write(bytes);
-        dop.flush();
-        dop.close();
-        InputStream inSt = webRequest.getInputStream();
-        ByteArray ba = new ByteArray();
-        int rn2 = 0;
-        int bufferLength = 4096;
-        byte[] buf2 = new byte[bufferLength];
-        while ((rn2 = inSt.read(buf2, 0, bufferLength)) > 0) {
-            ba.cat(buf2, 0, rn2);
+        try {
+            HttpsURLConnection webRequest = HttpsConnection.getHttpsConnection(azureConfigProperties.getServiceUri());
+            webRequest.setRequestProperty("Host", "eastus.tts.speech.microsoft.com");
+            webRequest.setRequestProperty("Content-Type", "application/ssml+xml");
+            webRequest.setRequestProperty("X-Microsoft-OutputFormat", azureConfigProperties.getAudioType());
+            webRequest.setRequestProperty("Authorization", "Bearer " + accessToken);
+            webRequest.setRequestProperty("Ocp-Apim-Subscription-Key", azureConfigProperties.getApiKey());
+            webRequest.setRequestProperty("User-Agent", "Mozilla/5.0");
+            webRequest.setRequestProperty("Accept", "*/*");
+            webRequest.setDoInput(true);
+            webRequest.setDoOutput(true);
+            webRequest.setConnectTimeout(5000);
+            webRequest.setReadTimeout(300000);
+            webRequest.setRequestMethod("POST");
+
+            String body = XmlDom.createDom(azureConfigProperties.getLocale(), azureConfigProperties.getGender(), azureConfigProperties.getVoiceName(), textToSynthesize);
+            if (StringUtils.isEmpty(body)) {
+                return new byte[0];
+            }
+            byte[] bytes = body.getBytes();
+            webRequest.setRequestProperty("content-length", String.valueOf(bytes.length));
+            webRequest.connect();
+            DataOutputStream dop = new DataOutputStream(webRequest.getOutputStream());
+            dop.write(bytes);
+            dop.flush();
+            dop.close();
+            InputStream inSt = webRequest.getInputStream();
+            ByteArray ba = new ByteArray();
+            int rn2 = 0;
+            int bufferLength = 4096;
+            byte[] buf2 = new byte[bufferLength];
+            while ((rn2 = inSt.read(buf2, 0, bufferLength)) > 0) {
+                ba.cat(buf2, 0, rn2);
+            }
+
+            inSt.close();
+            webRequest.disconnect();
+            return ba.getArray();
+        } catch (Exception e) {
+            log.error("Synthesis tts speech failed {}", e.getMessage());
         }
 
-        inSt.close();
-        webRequest.disconnect();
-        return ba.getArray();
-    } catch (Exception e) {
-        log.error("Synthesis tts speech failed {}", e.getMessage());
+        return null;
     }
-
-    return null;
-}
-
 
 
 }

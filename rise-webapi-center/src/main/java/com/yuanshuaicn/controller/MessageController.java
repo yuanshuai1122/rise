@@ -31,7 +31,7 @@ public class MessageController {
      */
     @PostMapping("/send")
     public ResultBean<Object> send(@RequestBody SendMessageDto sendMessage) {
-        log.info("请求进入...");
+        log.info("发送消息开始, sendMessage:{}", sendMessage);
         if (StringUtils.isBlank(sendMessage.getContent())) {
             return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "请说些什么吧", null);
         }
