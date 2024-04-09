@@ -1,6 +1,7 @@
 package com.yuanshuaicn.factory.impl;
 
 
+import com.google.gson.Gson;
 import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.SimpleVoice4TextResponse;
 import com.yuanshuaicn.beans.common.ResultBean;
@@ -81,7 +82,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
         SimpleVoice4TextResponse textResponse = JsonUtils.jsonToObj(resultStr, SimpleVoice4TextResponse.class);
 
         // 放入文本队列
-        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT, new QueenInfo(voice4Text.getSessionId(), textResponse.getDisplayText()));
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT, new Gson().toJson(new QueenInfo(voice4Text.getSessionId(), textResponse.getDisplayText())));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "成功", null);
 

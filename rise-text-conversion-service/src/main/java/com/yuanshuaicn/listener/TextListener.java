@@ -1,7 +1,9 @@
 package com.yuanshuaicn.listener;
 
+import com.google.gson.Gson;
 import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
+import com.yuanshuaicn.load.LoadModelContext;
 import com.yuanshuaicn.mq.constant.QueenConstant;
 import com.yuanshuaicn.service.TextConversionService;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +21,25 @@ public class TextListener {
 
     private final TextConversionService conversionService;
 
+    private final LoadModelContext loadModelContext;
+
     /**
      * 监听文本转换队列
      *
      * @param msg MSG
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = QueenConstant.TOPIC_QUEUE_TEXT),
+            value = @Queue(name = QueenConstant.DIRECT_QUEUE_TEXT),
             exchange = @Exchange(name = QueenConstant.EXCHANGE_TOPIC),
             key = {QueenConstant.RISE_CONVERSION_TEXT}
     ))
-    public void voice4TextMessage(QueenInfo msg) {
-        log.info("接收到消息, msg:{}", msg);
+    public void voice4TextMessage(String msg) {
+        log.info("【文本转换服务】接收到消息, msg:{}", msg);
+        loadModelContext.load();
+        QueenInfo queenInfo = new Gson().fromJson(msg, QueenInfo.class);
         CallConversationDto callConversationDto = new CallConversationDto();
-        callConversationDto.setContent(msg.getContent());
-        callConversationDto.setSessionId(msg.getSessionId());
+        callConversationDto.setContent(queenInfo.getContent());
+        callConversationDto.setSessionId(queenInfo.getSessionId());
         conversionService.callConversation(callConversationDto);
     }
 

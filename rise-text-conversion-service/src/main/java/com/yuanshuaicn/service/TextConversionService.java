@@ -1,5 +1,6 @@
 package com.yuanshuaicn.service;
 
+import com.yuanshuaicn.beans.ModelInfo;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
 import com.yuanshuaicn.beans.textconversion.CallBean;
@@ -35,8 +36,10 @@ public class TextConversionService {
     public ResultBean<Object> callConversation(CallConversationDto callInfo) {
         // 验证注册的客户端id
 
+        ModelInfo modelInfo = ModelContext.getModelInfo();
+        log.info("【文本转换服务】获取模型上下文, modelInfo:{}", modelInfo);
         // 获取模型实现
-        LLM llm = llmFactory.getLLM(ModelContext.getModelInfo().getTextModel());
+        LLM llm = llmFactory.getLLM(modelInfo.getTextModel());
         if (null == llm) {
             return new ResultBean<>(RetCodeEnum.STATUS_ERROR, "模型不存在", null);
         }

@@ -1,10 +1,7 @@
 package com.yuanshuaicn.mq.config;
 
 import com.yuanshuaicn.mq.constant.QueenConstant;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +23,7 @@ public class QueenConfig {
      */
     @Bean("textConversionQueue")
     public Queue textConversionQueue() {
-        return new Queue(QueenConstant.TOPIC_QUEUE_TEXT);
+        return new Queue(QueenConstant.DIRECT_QUEUE_TEXT);
     }
 
     /**
@@ -36,7 +33,7 @@ public class QueenConfig {
      */
     @Bean("voice4textConversionQueue")
     public Queue voice4textConversionQueue() {
-        return new Queue(QueenConstant.TOPIC_QUEUE_VOICE_4_TEXT);
+        return new Queue(QueenConstant.DIRECT_QUEUE_VOICE_4_TEXT);
     }
 
 
@@ -47,7 +44,7 @@ public class QueenConfig {
      */
     @Bean("text4voiceConversionQueue")
     public Queue text4voiceConversionQueue() {
-        return new Queue(QueenConstant.TOPIC_QUEUE_TEXT_4_VOICE);
+        return new Queue(QueenConstant.DIRECT_QUEUE_TEXT_4_VOICE);
     }
 
 
@@ -58,7 +55,7 @@ public class QueenConfig {
      */
     @Bean("videoConversionQueue")
     public Queue videoConversionQueue() {
-        return new Queue(QueenConstant.TOPIC_QUEUE_VIDEO);
+        return new Queue(QueenConstant.DIRECT_QUEUE_VIDEO);
     }
 
 
@@ -68,8 +65,8 @@ public class QueenConfig {
      * @return {@link TopicExchange}
      */
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(QueenConstant.EXCHANGE_TOPIC);
+    DirectExchange exchange() {
+        return new DirectExchange(QueenConstant.EXCHANGE_TOPIC);
     }
 
 

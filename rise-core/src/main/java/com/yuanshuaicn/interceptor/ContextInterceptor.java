@@ -32,6 +32,7 @@ public class ContextInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("获取模型上下文开始");
         Object o = redisTemplate.opsForValue().get(CommonConstants.MODEL_REDIS_KEY);
         if (null != o) {
             ModelInfo modelInfo = (ModelInfo) o;

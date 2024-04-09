@@ -1,8 +1,10 @@
 package com.yuanshuaicn.listener;
 
+import com.google.gson.Gson;
 import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.dto.Text4VoiceDto;
 import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
+import com.yuanshuaicn.load.LoadModelContext;
 import com.yuanshuaicn.mq.constant.QueenConstant;
 import com.yuanshuaicn.service.VoiceService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ public class VoiceListener {
 
     private final VoiceService voiceService;
 
+    private final LoadModelContext loadModelContext;
+
 
     /**
      * 监听语音转文本队列
@@ -27,15 +31,17 @@ public class VoiceListener {
      * @param msg MSG
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = QueenConstant.TOPIC_QUEUE_VOICE_4_TEXT),
+            value = @Queue(name = QueenConstant.DIRECT_QUEUE_VOICE_4_TEXT),
             exchange = @Exchange(name = QueenConstant.EXCHANGE_TOPIC),
             key = {QueenConstant.RISE_CONVERSION_VOICE_4_TEXT}
     ))
-    public void voice4TextMessage(QueenInfo msg) {
-        log.info("接收到消息, msg:{}", msg);
+    public void voice4TextMessage(String msg) {
+        log.info("【语音转文本服务】接收到消息, msg:{}", msg);
+        loadModelContext.load();
+        QueenInfo queenInfo = new Gson().fromJson(msg, QueenInfo.class);
         Voice4Text voice4Text = new Voice4Text();
-        voice4Text.setVoiceUrl(msg.getContent());
-        voice4Text.setSessionId(msg.getSessionId());
+        voice4Text.setVoiceUrl(queenInfo.getContent());
+        voice4Text.setSessionId(queenInfo.getSessionId());
         voiceService.callVoice4Text(voice4Text);
     }
 
@@ -45,15 +51,17 @@ public class VoiceListener {
      * @param msg MSG
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = QueenConstant.TOPIC_QUEUE_TEXT_4_VOICE),
+            value = @Queue(name = QueenConstant.DIRECT_QUEUE_TEXT_4_VOICE),
             exchange = @Exchange(name = QueenConstant.EXCHANGE_TOPIC),
             key = {QueenConstant.RISE_CONVERSION_TEXT_4_VOICE}
     ))
-    public void text4VoiceMessage(QueenInfo msg) {
-        log.info("接收到消息, msg:{}", msg);
+    public void text4VoiceMessage(String msg) {
+        log.info("【文本转语音服务】接收到消息, msg:{}", msg);
+        loadModelContext.load();
+        QueenInfo queenInfo = new Gson().fromJson(msg, QueenInfo.class);
         Text4VoiceDto text4VoiceDto = new Text4VoiceDto();
-        text4VoiceDto.setContent(msg.getContent());
-        text4VoiceDto.setSessionId(msg.getSessionId());
+        text4VoiceDto.setContent(queenInfo.getContent());
+        text4VoiceDto.setSessionId(queenInfo.getSessionId());
         voiceService.callText4Voice(text4VoiceDto);
     }
 

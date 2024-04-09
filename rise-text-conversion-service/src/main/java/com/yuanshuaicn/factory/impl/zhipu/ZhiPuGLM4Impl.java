@@ -69,7 +69,7 @@ public class ZhiPuGLM4Impl implements ZhiPuGLM {
         String content = glm4Response.getChoices().getFirst().getMessage().getContent();
 
         // 发送到文本转语音队列
-        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT_4_VOICE, new QueenInfo(content, call.getRequestId()));
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_TEXT_4_VOICE, new Gson().toJson(new QueenInfo(content, call.getRequestId())));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "请求成功", content);
     }

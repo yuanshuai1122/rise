@@ -1,6 +1,7 @@
 package com.yuanshuaicn.service;
 
 
+import com.google.gson.Gson;
 import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
@@ -36,7 +37,7 @@ public class MessageService {
         voice4Text.setSessionId(sessionId);
 
         // 发送到语音转文本
-        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_VOICE_4_TEXT, new QueenInfo(voice4Text.getVoiceUrl(), voice4Text.getSessionId()));
+        rabbitTemplate.convertAndSend(QueenConstant.EXCHANGE_TOPIC, QueenConstant.RISE_CONVERSION_VOICE_4_TEXT, new Gson().toJson(new QueenInfo(voice4Text.getVoiceUrl(), voice4Text.getSessionId())));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "成功", null);
     }

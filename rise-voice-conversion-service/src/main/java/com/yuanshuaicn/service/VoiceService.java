@@ -1,6 +1,7 @@
 package com.yuanshuaicn.service;
 
 
+import com.yuanshuaicn.beans.ModelInfo;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.Text4VoiceDto;
 import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
@@ -28,7 +29,9 @@ public class VoiceService {
      * @return {@link ResultBean}<{@link Object}>
      */
     public ResultBean<Object> callText4Voice(Text4VoiceDto dto) {
-        VoiceModel voiceModel = voiceFactory.getVoiceModel(ModelContext.getModelInfo().getVoiceModel());
+        ModelInfo modelInfo = ModelContext.getModelInfo();
+        log.info("【文本转语音服务】获取模型上下文, modelInfo:{}", modelInfo);
+        VoiceModel voiceModel = voiceFactory.getVoiceModel(modelInfo.getVoiceModel());
         if (null == voiceModel) {
             return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "模型不存在", null);
         }
@@ -48,7 +51,9 @@ public class VoiceService {
      * @return {@link ResultBean}<{@link Object}>
      */
     public ResultBean<Object> callVoice4Text(Voice4Text dto) {
-        VoiceModel voiceModel = voiceFactory.getVoiceModel(ModelContext.getModelInfo().getVoiceModel());
+        ModelInfo modelInfo = ModelContext.getModelInfo();
+        log.info("【语音转文本】获取模型上下文, modelInfo:{}", modelInfo);
+        VoiceModel voiceModel = voiceFactory.getVoiceModel(modelInfo.getVoiceModel());
         if (null == voiceModel) {
             return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "模型不存在", null);
         }

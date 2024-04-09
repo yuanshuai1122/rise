@@ -9,34 +9,29 @@ public class QueenConstant {
     /**
      * 交换机
      */
-    public static final String EXCHANGE_TOPIC = "exchange.Topic";
+    public static final String EXCHANGE_TOPIC = "exchange.Direct";
 
     /**
      * 文本队列
      */
-    public static final String TOPIC_QUEUE_TEXT = "Topic.queue.text";
+    public static final String DIRECT_QUEUE_TEXT = "Direct.queue.text";
 
     /**
      * 语音转文本队列
      */
-    public static final String TOPIC_QUEUE_VOICE_4_TEXT = "Topic.queue.voice4text";
+    public static final String DIRECT_QUEUE_VOICE_4_TEXT = "Direct.queue.voice4text";
 
 
     /**
      * 文本转语音队列
      */
-    public static final String TOPIC_QUEUE_TEXT_4_VOICE = "Topic.queue.text4voice";
+    public static final String DIRECT_QUEUE_TEXT_4_VOICE = "Direct.queue.text4voice";
 
     /**
      * 视频队列
      */
-    public static final String TOPIC_QUEUE_VIDEO = "Topic.queue.video";
+    public static final String DIRECT_QUEUE_VIDEO = "Direct.queue.video";
 
-
-    /**
-     * 所有队列匹配
-     */
-    public static final String RISE_CONVERSION_ALL = "rise.conversion.#";
 
 
     /**
