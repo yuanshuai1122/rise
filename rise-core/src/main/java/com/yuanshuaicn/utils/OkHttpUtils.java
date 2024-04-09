@@ -7,6 +7,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
@@ -217,6 +218,15 @@ public class OkHttpUtils {
         request = new Request.Builder().post(requestBody).url(url);
         return this;
     }
+
+    // Post binary file
+    public OkHttpUtils postBinary(File file) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        request = new Request.Builder().post(requestBody).url(url);
+        return this;
+    }
+
+
     /**
      * 同步请求
      *
