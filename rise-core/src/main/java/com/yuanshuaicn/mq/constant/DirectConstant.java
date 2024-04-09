@@ -13,6 +13,8 @@ public class DirectConstant {
     public static final String RED = "red";
     public static final String YELLOW = "yellow";
     public static final String PINK = "pink";
+    public static final String BLACK = "black";
+    public static final String GREEN = "green";
 
 
 

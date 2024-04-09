@@ -13,6 +13,6 @@ public class Text4VoiceDto {
     /**
      * 模型
      */
-    private String model;
+    private String sessionId;
 
 }

@@ -1,7 +1,7 @@
 package com.yuanshuaicn.factory;
 
-import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
+import com.yuanshuaicn.beans.textconversion.CallBean;
 
 /**
  * 文本转换

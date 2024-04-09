@@ -3,22 +3,20 @@ package com.yuanshuaicn.factory.impl.zhipu;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Bean;
 import com.yuanshuaicn.beans.textconversion.zhipu.glm4.CallZPGLM4Messages;
 import com.yuanshuaicn.beans.textconversion.zhipu.glm4.result.GLM4Response;
-import com.yuanshuaicn.beans.textconversion.zhipu.glm4.result.Message;
 import com.yuanshuaicn.config.zhipu.ZhiPuGLM4ConfigProperties;
 import com.yuanshuaicn.constants.HeaderConstants;
+import com.yuanshuaicn.constants.enums.LlmRoleEnums;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.textconversion.ZhiPuLLMConstants;
-import com.yuanshuaicn.constants.enums.LlmRoleEnums;
 import com.yuanshuaicn.mq.constant.DirectConstant;
-import com.yuanshuaicn.mq.constant.QueueConstant;
 import com.yuanshuaicn.utils.OkHttpUtils;
 import com.yuanshuaicn.utils.ZhiPuApiTokenUtil;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -70,7 +68,7 @@ public class ZhiPuGLM4Impl implements ZhiPuGLM {
 
         String content = glm4Response.getChoices().getFirst().getMessage().getContent();
 
-        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.YELLOW, content);
+        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.YELLOW, new QueenInfo(content, call.getRequestId()));
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "请求成功", content);
     }

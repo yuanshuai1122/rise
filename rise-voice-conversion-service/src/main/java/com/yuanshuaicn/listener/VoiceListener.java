@@ -1,6 +1,8 @@
 package com.yuanshuaicn.listener;
 
+import com.yuanshuaicn.beans.QueenInfo;
 import com.yuanshuaicn.beans.dto.Text4VoiceDto;
+import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
 import com.yuanshuaicn.mq.constant.DirectConstant;
 import com.yuanshuaicn.service.VoiceService;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +21,34 @@ public class VoiceListener {
 
     private final VoiceService voiceService;
 
+
+
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = DirectConstant.DIRECT_QUEUE_2),
             exchange = @Exchange(name = DirectConstant.EXCHANGE_DIRECT,type = ExchangeTypes.DIRECT),
-            key = {DirectConstant.RED,DirectConstant.YELLOW}
+            key = {DirectConstant.RED}
     ))
-    public void Text4VoiceMessage(String msg){
+    public void Voice4TextMessage(QueenInfo msg){
+        log.info("接收到消息, msg:{}", msg);
+        Voice4Text voice4Text = new Voice4Text();
+        voice4Text.setVoiceUrl(msg.getContent());
+        voice4Text.setSessionId(msg.getSessionId());
+        voiceService.callVoice4Text(voice4Text);
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = DirectConstant.DIRECT_QUEUE_2),
+            exchange = @Exchange(name = DirectConstant.EXCHANGE_DIRECT,type = ExchangeTypes.DIRECT),
+            key = {DirectConstant.YELLOW}
+    ))
+    public void Text4VoiceMessage(QueenInfo msg){
         log.info("接收到消息, msg:{}", msg);
         Text4VoiceDto text4VoiceDto = new Text4VoiceDto();
-        text4VoiceDto.setContent(msg);
-        text4VoiceDto.setModel("azure");
+        text4VoiceDto.setContent(msg.getContent());
+        text4VoiceDto.setSessionId(msg.getSessionId());
         voiceService.callText4Voice(text4VoiceDto);
     }
+
 
 
 }

@@ -39,11 +39,6 @@ public class TextConventionController {
         if (StringUtils.isBlank(dto.getContent())) {
             return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "内容不能为空", null);
         }
-        if (StringUtils.isBlank(dto.getClientId()) ||
-                StringUtils.isBlank(dto.getModel()) ||
-                StringUtils.isBlank(dto.getModelVersion())) {
-            return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "参数缺失", null);
-        }
 
         return conversionService.callConversation(dto);
     }

@@ -14,11 +14,6 @@ public class CallBean {
     /**
      * 会话标识
      */
-    private String requestId;
-
-    /**
-     * 模型版本
-     */
-    private String modelVersion;
+    private String sessionId;
 
 }

@@ -1,6 +1,5 @@
 package com.yuanshuaicn;
 
-import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
 import com.yuanshuaicn.factory.impl.AzureVoiceModelImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

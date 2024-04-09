@@ -1,8 +1,9 @@
 package com.yuanshuaicn.factory.impl;
 
-import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
+import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.textconversion.zhipu.CallZhiPuBean;
+import com.yuanshuaicn.config.ModelContext;
 import com.yuanshuaicn.config.ZhiPuConfigProperties;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.textconversion.LLMConstants;
@@ -29,14 +30,14 @@ public class ZhiPuLLM implements LLM {
 
     @Override
     public ResultBean<Object> call(CallBean call) {
-        ZhiPuGLM zhiPuLLM = zhiPuLLMMap.get(call.getModelVersion());
+        ZhiPuGLM zhiPuLLM = zhiPuLLMMap.get(ModelContext.getModelInfo().getTextSubModel());
         if (null == zhiPuLLM) {
             return new ResultBean<>(RetCodeEnum.STATUS_ERROR, "模型版本不存在", null);
         }
 
         CallZhiPuBean callZhiPuBean = new CallZhiPuBean();
         callZhiPuBean.setContent(call.getContent());
-        callZhiPuBean.setRequestId(call.getRequestId());
+        callZhiPuBean.setRequestId(call.getSessionId());
         callZhiPuBean.setApiKey(zhiPuConfigProperties.getApiKey());
 
         return zhiPuLLM.callZP(callZhiPuBean);

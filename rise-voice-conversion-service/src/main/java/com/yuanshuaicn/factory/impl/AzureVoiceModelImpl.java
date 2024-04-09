@@ -1,36 +1,30 @@
 package com.yuanshuaicn.factory.impl;
 
 
-import com.microsoft.cognitiveservices.speech.*;
-import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
-import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
-import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
-import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
-import com.yuanshuaicn.constants.HeaderConstants;
-import com.yuanshuaicn.constants.enums.RetCodeEnum;
+import com.yuanshuaicn.beans.QueenInfo;
+import com.yuanshuaicn.beans.SimpleVoice4TextResponse;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.voiceconversion.Text4voiceBean;
+import com.yuanshuaicn.beans.voiceconversion.Voice4Text;
+import com.yuanshuaicn.config.AzureConfigProperties;
+import com.yuanshuaicn.constants.HeaderConstants;
+import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.constants.voiceconversion.VoiceModelConstants;
 import com.yuanshuaicn.factory.VoiceModel;
-import com.yuanshuaicn.config.AzureConfigProperties;
+import com.yuanshuaicn.mq.constant.DirectConstant;
 import com.yuanshuaicn.service.Authentication;
 import com.yuanshuaicn.storage.impl.AliStorageImpl;
 import com.yuanshuaicn.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.commons.lang3.StringUtils;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +46,8 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
     private final Authentication authentication;
 
+    private final RabbitTemplate rabbitTemplate;
+
     OkHttpUtils okHttpClient = OkHttpUtils.builder(20, 30, TimeUnit.SECONDS,
             15, 15, 15, TimeUnit.SECONDS);
 
@@ -61,7 +57,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
         // 生成字节文件
         byte[] bytes = genAudioBytes(text4voiceBean.getContent(), azureConfigProperties);
         // 存储到桶
-        ByteArray.convertByteArrayToFile(bytes, "aa.wav", "/Users/wangxinru/Downloads/");
+        ByteArray.convertByteArrayToFile(bytes, text4voiceBean.getFileName() + ".wav", "/Users/yuanshuai/Downloads/");
 
         return new ResultBean<>(RetCodeEnum.SUCCESS, "转换成功", null);
 
@@ -70,7 +66,7 @@ public class AzureVoiceModelImpl implements VoiceModel {
     @Override
     public ResultBean<Object> voice4text(Voice4Text voice4Text) {
 
-        File file = ByteArray.getFileByHttpURL("https://rise-bucket.oss-cn-beijing.aliyuncs.com/voices/whatstheweatherlike.wav");
+        File file = ByteArray.getFileByHttpURL(voice4Text.getVoiceUrl());
         String resultStr = okHttpClient
                 .url("https://eastus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=zh-CN")
                 //.addHeader("Ocp-Apim-Subscription-Key", azureConfigProperties.getApiKey())
@@ -81,7 +77,12 @@ public class AzureVoiceModelImpl implements VoiceModel {
 
         log.info(resultStr);
 
-        return null;
+        SimpleVoice4TextResponse textResponse = JsonUtils.jsonToObj(resultStr, SimpleVoice4TextResponse.class);
+
+        // 放入队列
+        rabbitTemplate.convertAndSend(DirectConstant.EXCHANGE_DIRECT,DirectConstant.PINK, new QueenInfo(voice4Text.getSessionId(), textResponse.getDisplayText()));
+
+        return new ResultBean<>(RetCodeEnum.SUCCESS, "成功", null);
 
     }
 

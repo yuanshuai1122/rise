@@ -6,6 +6,7 @@ import com.yuanshuaicn.constants.HeaderConstants;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class ModelInterceptor implements HandlerInterceptor {
 
 
@@ -25,6 +27,7 @@ public class ModelInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("pppp");
         // 获取模型
         String textModel = request.getHeader(HeaderConstants.MODEL_TEXT);
         String textSubModel = request.getHeader(HeaderConstants.MODEL_TEXT_SUB);

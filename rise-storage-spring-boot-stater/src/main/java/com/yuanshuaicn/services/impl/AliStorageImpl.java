@@ -8,14 +8,8 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
 import com.yuanshuaicn.beans.UploadBean;
 import com.yuanshuaicn.config.AliConfigProperties;
-import com.yuanshuaicn.constants.StorageChannel;
 import com.yuanshuaicn.services.RiseStorage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

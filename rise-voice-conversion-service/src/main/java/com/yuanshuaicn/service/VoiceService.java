@@ -28,13 +28,14 @@ public class VoiceService {
      * @return {@link ResultBean}<{@link Object}>
      */
     public ResultBean<Object> callText4Voice(Text4VoiceDto dto) {
-        VoiceModel voiceModel = voiceFactory.getVoiceModel(dto.getModel());
+        VoiceModel voiceModel = voiceFactory.getVoiceModel(ModelContext.getModelInfo().getVoiceModel());
         if (null == voiceModel) {
             return new ResultBean<>(RetCodeEnum.PARAM_ERROR, "模型不存在", null);
         }
 
         Text4voiceBean text4voice = new Text4voiceBean();
         text4voice.setContent(dto.getContent());
+        text4voice.setFileName(dto.getSessionId());
 
         return voiceModel.text4voice(text4voice);
 

@@ -1,12 +1,12 @@
 package com.yuanshuaicn.service;
 
-import com.yuanshuaicn.beans.textconversion.CallBean;
 import com.yuanshuaicn.beans.common.ResultBean;
 import com.yuanshuaicn.beans.dto.CallConversationDto;
+import com.yuanshuaicn.beans.textconversion.CallBean;
+import com.yuanshuaicn.config.ModelContext;
 import com.yuanshuaicn.constants.enums.RetCodeEnum;
 import com.yuanshuaicn.factory.LLM;
 import com.yuanshuaicn.factory.LLMFactory;
-import com.yuanshuaicn.utils.CallUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,15 +36,14 @@ public class TextConversionService {
         // 验证注册的客户端id
 
         // 获取模型实现
-        LLM llm = llmFactory.getLLM(callInfo.getModel());
+        LLM llm = llmFactory.getLLM(ModelContext.getModelInfo().getTextModel());
         if (null == llm) {
             return new ResultBean<>(RetCodeEnum.STATUS_ERROR, "模型不存在", null);
         }
 
         CallBean callBean = new CallBean();
         callBean.setContent(callInfo.getContent());
-        callBean.setModelVersion(callInfo.getModelVersion());
-        callBean.setRequestId(CallUtils.generateSessionId(callInfo.getClientId(), callInfo.getSessionId()));
+        callBean.setSessionId(callInfo.getSessionId());
 
         return llm.call(callBean);
 

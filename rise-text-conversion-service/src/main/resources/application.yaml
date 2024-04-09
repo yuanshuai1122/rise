@@ -5,6 +5,29 @@ spring:
   application:
     name: rise-text-conversion-service
 
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      database: 1
+      # 读超时
+      timeout: 3000
+      # 连接超时
+      connectTimeout: 5000
+      # Lettuce连接池
+      lettuce:
+        pool:
+          # 最小空闲连接
+          min-idle: 5
+          # 最大空闲连接
+          max-idle: 10
+          # 最大连接数
+          max-active: 100
+          # 连接分配应该阻塞的最大时间
+          max-wait: 2000
+
   rabbitmq:
     host: ${RABBIT_MQ_HOST} # rabbitmq 的 ip 地址
     port: 5672 # 端口
@@ -41,4 +64,8 @@ rise:
           enabled: true
           request-url: https://open.bigmodel.cn/api/paas/v4/chat/completions
           model: glm-4
+
+  context:
+    interceptor:
+      enabled: true
 
